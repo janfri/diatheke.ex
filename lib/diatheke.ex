@@ -6,4 +6,8 @@ defmodule Diatheke do
   def start(_type, _args) do
     Diatheke.Supervisor.start_link
   end
+
+  def mods do
+    System.cmd("diatheke -b system -k modulelistnames") |> String.split(~r/\n/) |> Enum.reject(&(&1 == ""))
+  end
 end
