@@ -1,13 +1,19 @@
 defmodule Diatheke do
-  use Application.Behaviour
-
-  # See http://elixir-lang.org/docs/stable/Application.Behaviour.html
-  # for more information on OTP Applications
-  def start(_type, _args) do
-    Diatheke.Supervisor.start_link
-  end
 
   def mods do
-    System.cmd("diatheke -b system -k modulelistnames") |> String.split(~r/\n/) |> Enum.reject(&(&1 == ""))
+    exec(~w(-b system -k modulelistnames)) |> String.split(~r/\n/) |> Enum.reject(&(&1 == ""))
   end
+
+  defp exec(args) do
+    System.cmd("diatheke", args, []) |> parse_res
+  end
+
+  defp parse_res({res, 0}) do
+    res
+  end
+
+  defp parse_res(_) do
+    raise "Error"
+  end
+
 end
