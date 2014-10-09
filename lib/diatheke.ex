@@ -23,8 +23,24 @@ defmodule Diatheke do
     call(mod, key) |> parse_passage
   end
 
-  defp call(mod, key) do
-    System.cmd("diatheke", ["-b", mod, "-k", key], []) |> parse_res
+  @doc """
+  Returns a list of keys (as binary) of the search hits.
+  ## Examples
+      iex> Diatheke.search("KJV", "with God", range: "Joh 1")
+      ["John 1:1", "John 1:2"]
+  """
+  def search(mod, phrase, opts\\%{}) when is_binary(phrase) do
+    _search(mod, phrase, opts)
+  end
+
+  defp _search(mod, key, opts) do
+    new_opts = Dict.merge(opts, search: "phrase")
+    call(mod, key, gen_args(new_opts))
+    |> parse_search
+  end
+
+  defp call(mod, key, args\\[]) when is_binary(key) do
+    System.cmd("diatheke", List.flatten(["-b", mod, args, "-k", key]), []) |> parse_res
   end
 
   defp parse_res({res, 0}) do
@@ -43,6 +59,26 @@ defmodule Diatheke do
   defp gen_verse(line) do
     [k, t] = String.split(line, ": ", parts: 2)
     %{key: k, text: t}
+  end
+
+  defp parse_search(str) do
+    a = String.split(str, ~r/\s*--\s*/)
+    if Enum.count(a) == 3 do
+      a |> Enum.drop(1) |> List.first |> String.split(~r/\s*;\s*/)
+    else
+      []
+    end
+  end
+
+  defp gen_args(opts) do
+    args = []
+    if r = opts[:range] do
+      args = ["-r", r | args]
+    end
+    if s = opts[:search] do
+      args = ["-s", s | args]
+    end
+    args
   end
 
 end

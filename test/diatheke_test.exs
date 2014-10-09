@@ -13,4 +13,9 @@ defmodule DiathekeTest do
     assert text =~ ~r/^In the beginning was the Word/
   end
 
+  test "search phrase" do
+    res = Diatheke.search("KJV", "with God", range: "Joh 1")
+    assert ["John 1:1", "John 1:2"] = res
+  end
+
 end
