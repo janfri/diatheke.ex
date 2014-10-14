@@ -26,8 +26,12 @@ defmodule Diatheke do
   @doc """
   Returns a list of keys (as binary) of the search hits.
   ## Examples
+  Search phrase:
       iex> Diatheke.search("KJV", "with God", range: "Joh 1")
       ["John 1:1", "John 1:2"]
+  Search multiword:
+      iex> Diatheke.search("KJV", ~w(God Jesus), range:  "Joh 1")
+      ["John 1:29", "John 1:36"]
   """
   def search(mod, key, opts\\%{}) do
     new_opts = case key do
