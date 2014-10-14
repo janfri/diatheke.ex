@@ -18,4 +18,9 @@ defmodule DiathekeTest do
     assert ["John 1:1", "John 1:2"] = res
   end
 
+  test "search multiword" do
+    res = Diatheke.search("KJV", ~w(God Jesus), range:  "Joh 1")
+    assert ["John 1:29", "John 1:36"] = res
+  end
+
 end

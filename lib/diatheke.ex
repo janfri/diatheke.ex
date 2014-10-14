@@ -29,13 +29,16 @@ defmodule Diatheke do
       iex> Diatheke.search("KJV", "with God", range: "Joh 1")
       ["John 1:1", "John 1:2"]
   """
-  def search(mod, phrase, opts\\%{}) when is_binary(phrase) do
-    _search(mod, phrase, opts)
+  def search(mod, key, opts\\%{}) do
+    new_opts = case key do
+      phrase when is_binary(phrase) -> Dict.merge(opts, search: "phrase")
+      words when is_list(words) -> Dict.merge(opts, search: "multiword")
+    end
+    _search(mod, format_key(key), new_opts)
   end
 
   defp _search(mod, key, opts) do
-    new_opts = Dict.merge(opts, search: "phrase")
-    call(mod, key, gen_args(new_opts))
+    call(mod, key, gen_args(opts))
     |> parse_search
   end
 
@@ -79,6 +82,14 @@ defmodule Diatheke do
       args = ["-s", s | args]
     end
     args
+  end
+
+  defp format_key(key) when is_binary(key) do
+    key
+  end
+
+  defp format_key(key) when is_list(key) do
+    Enum.join(key, " ")
   end
 
 end
