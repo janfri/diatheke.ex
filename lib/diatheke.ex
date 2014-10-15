@@ -37,6 +37,12 @@ defmodule Diatheke do
     new_opts = case key do
       phrase when is_binary(phrase) -> Dict.merge(opts, search: "phrase")
       words when is_list(words) -> Dict.merge(opts, search: "multiword")
+      regex -> if Regex.regex?(regex) do
+        Dict.merge(opts, search: "regex")
+      else
+        raise "Error"
+      end
+
     end
     _search(mod, format_key(key), new_opts)
   end
@@ -94,6 +100,14 @@ defmodule Diatheke do
 
   defp format_key(key) when is_list(key) do
     Enum.join(key, " ")
+  end
+
+  defp format_key(key) do
+    if Regex.regex?(key) do
+      Regex.source(key)
+    else
+      raise "Error"
+    end
   end
 
 end

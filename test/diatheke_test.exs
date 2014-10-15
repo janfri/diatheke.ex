@@ -23,4 +23,9 @@ defmodule DiathekeTest do
     assert ["John 1:29", "John 1:36"] = res
   end
 
+  test "search regex" do
+    res = Diatheke.search("KJV", ~r/Jesus.+Jesus/, range: "Joh 1")
+    assert ["John 1:42"] = res
+  end
+
 end
