@@ -65,8 +65,9 @@ defmodule Diatheke do
   end
 
   defp parse_passage(str) do
-    l = String.split(str, ~r/\n\n+/) |> Enum.drop(-1)
-    Enum.map(l, &(gen_verse(&1)))
+    l = String.split(str, ~r/^(?=\w+ +\d+:\d+:)/m)
+    l = List.update_at(l, -1, &(String.replace(&1, ~r/\(\w+\)$/, "")))
+    Enum.map(l, &(gen_verse(String.strip(&1))))
   end
 
   defp gen_verse(line) do
