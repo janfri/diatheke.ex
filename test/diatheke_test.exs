@@ -24,8 +24,8 @@ defmodule DiathekeTest do
   end
 
   test "search regex" do
-    res = Diatheke.search("KJV", ~r/Jesus.+Jesus/, range: "Joh 1")
-    assert ["John 1:42"] = res
+    res = Diatheke.search("KJV", ~r/witness.+witness/, range: "Joh 1")
+    assert ["John 1:7"] = res
   end
 
   test "correct split with colon in text" do
