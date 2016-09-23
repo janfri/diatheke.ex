@@ -8,7 +8,7 @@ defmodule DiathekeTest do
 
   test "passage" do
     res = Diatheke.passage("KJV", "Joh 1:1-3")
-    assert ["John 1:1", "John 1:2", "John 1:3"] = (Enum.map(res, &(Dict.get(&1, :key))) |> Enum.sort)
+    assert ["John 1:1", "John 1:2", "John 1:3"] = (Enum.map(res, &(Map.get(&1, :key))) |> Enum.sort)
     [%{text: text} | _] = res
     assert text =~ ~r/^In the beginning was the Word/
   end
